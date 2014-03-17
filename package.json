@@ -1,0 +1,20 @@
+{
+  "name": "email-ricochet",
+  "version": "0.0.0",
+  "description": "email relay",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "email",
+    "relay"
+  ],
+  "author": "jesse keane",
+  "license": "MIT",
+  "dependencies": {
+    "smtp-protocol": "1.0.1",
+    "sendmail": "0.2.1",
+    "concat-stream": "1.4.4"
+  }
+}
