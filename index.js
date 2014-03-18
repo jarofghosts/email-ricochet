@@ -1,4 +1,6 @@
-var smtp = require('smtp-protocol')
+var concat = require('concat-stream')
+  , sendmail = require('sendmail')()
+  , smtp = require('smtp-protocol')
 
 module.exports = ricochet
 
@@ -41,18 +43,23 @@ function ricochet(domain, alias_lookup) {
     }
 
     function message_response(stream, ack) {
-      smtp.connect(to_alias.split('@')[1], 25, send_mail)
+      stream.pipe(concat(send_mail))
+      ack.accept(250, domain)
 
-      function send_mail(mail) {
-        mail.helo(domain)
-        mail.from(from_alias)
-        mail.to(to_alias)
-        mail.data()
-        stream.pipe(mail.message())
-
-        ack.accept()
-        mail.quit()
+      function send_mail(data) {
+        sendmail(
+            {
+                from: from_alias
+              , to: to_alias
+              , subject: 'derp'
+              , content: data
+            }
+            , check_status
+        )
       }
     }
+  }
+  function check_status(err, reply) {
+    console.log(err, reply)
   }
 }

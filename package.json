@@ -20,6 +20,8 @@
   "author": "jesse keane",
   "license": "MIT",
   "dependencies": {
-    "smtp-protocol": "1.0.1"
+    "smtp-protocol": "1.0.1",
+    "concat-stream": "1.4.4",
+    "sendmail": "0.2.1"
   }
 }
