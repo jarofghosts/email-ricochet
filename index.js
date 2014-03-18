@@ -1,5 +1,4 @@
 var smtp = require('smtp-protocol')
-  , concat = require('concat-stream')
 
 module.exports = ricochet
 
