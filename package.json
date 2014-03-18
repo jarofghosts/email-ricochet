@@ -1,6 +1,6 @@
 {
   "name": "email-ricochet",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "email relay",
   "main": "index.js",
   "repository": {
