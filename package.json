@@ -22,6 +22,7 @@
   "dependencies": {
     "smtp-protocol": "1.0.1",
     "concat-stream": "1.4.4",
-    "sendmail": "0.2.1"
+    "sendmail": "0.2.1",
+    "mailparser": "^0.4.1"
   }
 }

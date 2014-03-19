@@ -1,4 +1,5 @@
-var concat = require('concat-stream')
+var MailParser = require('mailparser').MailParser
+  , concat = require('concat-stream')
   , sendmail = require('sendmail')()
   , smtp = require('smtp-protocol')
 
@@ -6,6 +7,7 @@ module.exports = ricochet
 
 function ricochet(domain, alias_lookup) {
   var server = smtp.createServer(request_response)
+    , parser = new MailParser()
 
   return server
 
@@ -43,7 +45,9 @@ function ricochet(domain, alias_lookup) {
     }
 
     function message_response(stream, ack) {
-      stream.pipe(concat(send_mail))
+      parser.on('end', send_mail)
+      stream.pipe(parser)
+
       ack.accept(250, domain)
 
       function send_mail(data) {
@@ -51,8 +55,8 @@ function ricochet(domain, alias_lookup) {
             {
                 from: from_alias
               , to: to_alias
-              , subject: 'derp'
-              , content: data
+              , subject: data.subject
+              , content: data.text
             }
             , check_status
         )
