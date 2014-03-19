@@ -1,3 +1,5 @@
+var default_domain = require('os').hostname()
+
 var MailParser = require('mailparser').MailParser
   , concat = require('concat-stream')
   , sendmail = require('sendmail')()
@@ -5,7 +7,10 @@ var MailParser = require('mailparser').MailParser
 
 module.exports = ricochet
 
-function ricochet(domain, alias_lookup) {
+function ricochet(_domain, _alias_lookup) {
+  var alias_lookup = _alias_lookup || default_lookup
+    , domain = _domain || default_domain
+
   var server = smtp.createServer(request_response)
     , parser = new MailParser()
 
@@ -15,12 +20,14 @@ function ricochet(domain, alias_lookup) {
     var from_alias
       , to_alias
 
-    req.on('greeting', function(cmd, ack) {
-      ack.accept(250, domain + '- relay server')
-    })
+    req.on('greeting', welcome)
     req.on('from', from_response)
     req.on('to', to_response)
     req.on('message', message_response)
+
+    function welcome(cmd, ack) {
+      ack.accept(250, domain + '- relay server')
+    }
 
     function from_response(from, ack) {
       alias_lookup(from, determine)
@@ -51,15 +58,14 @@ function ricochet(domain, alias_lookup) {
       ack.accept(250, domain)
 
       function send_mail(data) {
-        sendmail(
-            {
-                from: from_alias
-              , to: to_alias
-              , subject: data.subject
-              , content: data.text
-            }
-            , check_status
-        )
+        var mail = {}
+
+        mail.from = from_alias
+        mail.to = to_alias
+        mail.subject = data.subject
+        mail.content = data.text
+
+        sendmail(mail, check_status)
       }
     }
   }
