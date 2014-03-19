@@ -45,7 +45,7 @@ function ricochet(domain, alias_lookup) {
     }
 
     function message_response(stream, ack) {
-      parser.on('end', send_mail)
+      parser.once('end', send_mail)
       stream.pipe(parser)
 
       ack.accept(250, domain)
